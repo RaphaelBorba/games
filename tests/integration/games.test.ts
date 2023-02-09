@@ -77,3 +77,25 @@ describe("GET /games/:id", () => {
         )
     })
 })
+
+describe("POST /games", () => {
+
+    it("should respond with 422 when wrong data is send", async () => {
+        
+        const consol = await createConsole()
+
+        const result = await server.post('/games').send({ titl: 'LOL', consoleId: consol.id})
+
+        expect(result.status).toBe(422)
+    })
+
+    it("repeated name return status 409", async () => {
+
+        const consol = await createConsole()
+        const game = await createGame(consol.id)
+
+        const result = await server.post('/games').send({ title: game.title, consoleId: consol.id })
+
+        expect(result.status).toBe(409)
+    })
+})

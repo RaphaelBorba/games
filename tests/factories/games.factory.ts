@@ -1,13 +1,12 @@
 import prisma from '../../src/config/database'
-import {faker} from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
-export function createGame(consoleId: number){
+export function createGame(consoleId: number) {
 
     return prisma.game.create({
-        data:{
+        data: {
             title: faker.name.lastName(),
             consoleId
         }
     })
 }
-
