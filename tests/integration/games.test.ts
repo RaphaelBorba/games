@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import supertest from 'supertest'
 import app from '../../src/app'
 import { createConsole } from '../factories/console.factory'
@@ -81,21 +82,33 @@ describe("GET /games/:id", () => {
 describe("POST /games", () => {
 
     it("should respond with 422 when wrong data is send", async () => {
-        
+
         const consol = await createConsole()
 
-        const result = await server.post('/games').send({ titl: 'LOL', consoleId: consol.id})
+        const result = await server.post('/games').send({ titl: 'LOL', consoleId: consol.id })
 
         expect(result.status).toBe(422)
     })
 
-    it("repeated name return status 409", async () => {
+    describe("When body is valid", () => {
 
-        const consol = await createConsole()
-        const game = await createGame(consol.id)
+        it("repeated name return status 409", async () => {
 
-        const result = await server.post('/games').send({ title: game.title, consoleId: consol.id })
+            const consol = await createConsole()
+            const game = await createGame(consol.id)
 
-        expect(result.status).toBe(409)
+            const result = await server.post('/games').send({ title: game.title, consoleId: consol.id })
+
+            expect(result.status).toBe(409)
+        })
+
+        it("Should return 201 when it is ok", async () => {
+
+            const consol = await createConsole()
+
+            const result = await server.post('/games').send({ title: faker.name.firstName(), consoleId: consol.id })
+
+            expect(result.status).toBe(201)
+        })
     })
 })
